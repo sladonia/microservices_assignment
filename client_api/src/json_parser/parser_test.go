@@ -1,7 +1,7 @@
 package json_parser
 
 import (
-	"client_api/src/domains"
+	"client_api/src/portpb"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"os"
@@ -96,7 +96,7 @@ func TestGetPortsChannel(t *testing.T) {
 		portsCh, err := GetPortsChannel(testPortData)
 		assert.Nil(tt, err)
 		assert.NotNil(tt, portsCh)
-		ports := make([]domains.Port, 0, 3)
+		ports := make([]portpb.Port, 0, 3)
 		for port := range portsCh {
 			ports = append(ports, port)
 		}

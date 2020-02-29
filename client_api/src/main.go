@@ -3,6 +3,7 @@ package main
 import (
 	"client_api/src/app"
 	"client_api/src/config"
+	"client_api/src/grpc_client"
 	"client_api/src/logger"
 	"net/http"
 	"os"
@@ -18,8 +19,13 @@ func main() {
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
 
-	r := app.InitApp()
+	err := grpc_client.InitGrpcClient(config.Config.PortDomain.Host,
+		config.Config.PortDomain.Port)
+	if err != nil {
+		panic(err)
+	}
 
+	r := app.InitApp()
 	logger.Logger.Infof("start listening on port %s", config.Config.Port)
 	go func() {
 		if err := http.ListenAndServe(":8080", r); err != nil {

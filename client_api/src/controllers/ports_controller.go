@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"client_api/src/grpc_client"
 	"client_api/src/json_parser"
 	"client_api/src/logger"
+	"client_api/src/services"
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -29,23 +32,28 @@ func (c *portsController) Import(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	n := 0
-	for port := range portsCh {
-		_ = port
-		n++
+	importResp, err := services.PortService.Import(portsCh, grpc_client.Conn)
+	if err != nil {
+		logger.Logger.Infow("unable to call ports grpc service", "error", err)
+		apiErr := NewApiError("service unavailable", "internal server error",
+			http.StatusInternalServerError)
+		RespondError(w, apiErr)
+		return
 	}
-	RespondJSON(w, http.StatusOK, struct {
-		Message    string `json:"message"`
-		PortsCount int    `json:"ports_count"`
-	}{Message: "success", PortsCount: n})
+	RespondJSON(w, http.StatusOK, importResp)
 }
 
 func (c *portsController) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	portId := vars["port_id"]
 
-	RespondJSON(w, http.StatusOK, struct {
-		Message string `json:"message"`
-		Id      string `json:"id"`
-	}{Message: "success", Id: portId})
+	port, err := services.PortService.Get(portId, grpc_client.Conn)
+	if err != nil {
+		logger.Logger.Debugw("unable to get port", "portId", portId, "error", err)
+		apiErr := NewNotFoundApiError(fmt.Sprintf(
+			"port with abbreviation=\"%s\" not found in the database", portId))
+		RespondError(w, apiErr)
+		return
+	}
+	RespondJSON(w, http.StatusOK, port)
 }

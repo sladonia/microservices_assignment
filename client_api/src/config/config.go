@@ -13,6 +13,8 @@ type Configuration struct {
 }
 
 type PortDomain struct {
+	Host string `env:"PORT_DOMAIN_HOST" default:"localhost"`
+	Port string `env:"PORT_DOMAIN_PORT" default:"50051"`
 }
 
 func Load() error {

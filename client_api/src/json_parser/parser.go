@@ -1,16 +1,16 @@
 package json_parser
 
 import (
-	"client_api/src/domains"
 	"client_api/src/logger"
+	"client_api/src/portpb"
 	"encoding/json"
 	"io"
 )
 
 // GetPortsChannel reads JSON stream object by object and puts them down the channel
 // It returns the channel and closes it when the stream is empty
-func GetPortsChannel(portsJsonStream io.Reader) (<-chan domains.Port, error) {
-	portsCh := make(chan domains.Port)
+func GetPortsChannel(portsJsonStream io.Reader) (<-chan portpb.Port, error) {
+	portsCh := make(chan portpb.Port)
 	decoder := json.NewDecoder(portsJsonStream)
 
 	_, err := decoder.Token()
@@ -22,7 +22,7 @@ func GetPortsChannel(portsJsonStream io.Reader) (<-chan domains.Port, error) {
 	// put Ports down the channel
 	// close the channel when end reading
 	go func() {
-		port := domains.Port{}
+		port := portpb.Port{}
 		for decoder.More() {
 			key, err := decoder.Token()
 			if err != nil {
