@@ -2,13 +2,13 @@ package json_parser
 
 import (
 	"client_api/src/domains"
+	"client_api/src/logger"
 	"encoding/json"
 	"io"
-	"log"
 )
 
-// reads JSON stream object by object and puts them down the channel
-// returns the channel and closes it when the stream is empty
+// GetPortsChannel reads JSON stream object by object and puts them down the channel
+// It returns the channel and closes it when the stream is empty
 func GetPortsChannel(portsJsonStream io.Reader) (<-chan domains.Port, error) {
 	portsCh := make(chan domains.Port)
 	decoder := json.NewDecoder(portsJsonStream)
@@ -26,19 +26,19 @@ func GetPortsChannel(portsJsonStream io.Reader) (<-chan domains.Port, error) {
 		for decoder.More() {
 			key, err := decoder.Token()
 			if err != nil {
-				log.Println(err)
+				logger.Logger.Debugw("unable to decode json key", "error", err)
 				continue
 			}
 
 			s, ok := key.(string)
 			if !ok {
-				log.Printf("unable to pass key to string. key: %v", s)
+				logger.Logger.Debugf("unable to pass key to string. key: %v", s)
 				continue
 			}
 
 			err = decoder.Decode(&port)
 			if err != nil {
-				log.Println(err)
+				logger.Logger.Debugw("unable to decode json object", "error", err)
 				continue
 			}
 			port.Abbreviation = s
