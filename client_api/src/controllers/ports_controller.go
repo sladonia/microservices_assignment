@@ -51,7 +51,7 @@ func (c *portsController) Get(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Logger.Debugw("unable to get port", "portId", portId, "error", err)
 		apiErr := NewNotFoundApiError(fmt.Sprintf(
-			"port with abbreviation=\"%s\" not found in the database", portId))
+			"port with abbreviation=%s not found in the database", portId))
 		RespondError(w, apiErr)
 		return
 	}

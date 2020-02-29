@@ -8,6 +8,10 @@ run:
 build:
 	$(BUILD)
 
+docker_build:
+	$(BUILD)
+	docker build -t $(SERVICE_NAME) .
+
 fmt:
 	go fmt ./src/...
 
@@ -18,4 +22,4 @@ dep:
 test:
 	@ go test ./src/...
 
-.PHONY: run build fmt dep test
+.PHONY: run build docker_build fmt dep test

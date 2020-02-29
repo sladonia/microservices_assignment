@@ -8,6 +8,10 @@ run:
 build:
 	$(BUILD)
 
+docker_build:
+	$(BUILD)
+	docker build -t $(SERVICE_NAME) .
+
 fmt:
 	go fmt ./src/...
 
@@ -21,4 +25,4 @@ test:
 bench:
 	@ go test -run=none -bench=. -benchmem ./src/json_parser/...
 
-.PHONY: run build fmt dep test bench
+.PHONY: run build docker_build fmt dep test bench
