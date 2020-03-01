@@ -15,6 +15,9 @@ docker_build:
 fmt:
 	go fmt ./src/...
 
+vet:
+	go vet ./src/...
+
 dep:
 	@ cd src
 	go mod tidy
@@ -25,4 +28,4 @@ test:
 bench:
 	@ go test -run=none -bench=. -benchmem ./src/json_parser/...
 
-.PHONY: run build docker_build fmt dep test bench
+.PHONY: run build docker_build fmt vet dep test bench

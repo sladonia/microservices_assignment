@@ -15,6 +15,9 @@ docker_build:
 fmt:
 	go fmt ./src/...
 
+vet:
+	go vet ./src/...
+
 dep:
 	@ cd src
 	go mod tidy
@@ -23,4 +26,4 @@ test:
 	@ go test ./src/services/...
 	@ go test ./src/controllers/...
 
-.PHONY: run build docker_build fmt dep test
+.PHONY: run build docker_build fmt vet dep test
