@@ -5,10 +5,11 @@ import "github.com/jinzhu/configor"
 var Config Configuration
 
 type Configuration struct {
-	ServiceName string `env:"SERVICE_NAME" default:"port_domain_service"`
-	Env         string `env:"ENV" default:"dev"`
-	LogLevel    string `env:"LOG_LEVEL" default:"debug"`
-	Port        string `env:"PORT" default:":50051"`
+	ServiceName     string `env:"SERVICE_NAME" default:"port_domain_service"`
+	Env             string `env:"ENV" default:"dev"`
+	LogLevel        string `env:"LOG_LEVEL" default:"debug"`
+	Port            string `env:"PORT" default:":50051"`
+	ShutdownTimeout int    `env:"SHUTDOWN_TIMEOUT" default:"20"` // seconds
 }
 
 func Load() error {

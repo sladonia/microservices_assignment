@@ -1,28 +1,14 @@
 package app
 
 import (
-	"client_api/src/config"
 	"client_api/src/controllers"
-	"client_api/src/logger"
 	"client_api/src/middlewares/logging_middleware"
 	"github.com/gorilla/mux"
-	"net/http"
 )
 
-// ConfigureApp loads config and inits logger
-func ConfigureApp() error {
-	if err := config.Load(); err != nil {
-		return err
-	}
-	if err := logger.InitLogger(config.Config.ServiceName, config.Config.LogLevel); err != nil {
-		return err
-	}
-	return nil
-}
-
-// InitApp creates and configures router
-// Returns router instance
-func InitApp() http.Handler {
+// ConfigureRouter creates and configures router, inits server
+// Returns server instance
+func ConfigureRouter(listenPort string) *mux.Router {
 	r := mux.NewRouter()
 	r.NotFoundHandler = &controllers.NotFoundHandler{}
 
