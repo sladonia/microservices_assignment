@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"port_domain_service/src/config"
+	"port_domain_service/src/db"
 	"port_domain_service/src/logger"
 	"port_domain_service/src/portpb"
 	"port_domain_service/src/service"
@@ -19,6 +20,12 @@ func main() {
 	}
 	// Init logger
 	err := logger.InitLogger(config.Config.ServiceName, config.Config.LogLevel)
+	if err != nil {
+		panic(err)
+	}
+
+	// Init db connection
+	err = db.Connect(config.Config.DbConfig)
 	if err != nil {
 		panic(err)
 	}

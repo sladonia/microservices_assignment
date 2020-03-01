@@ -20,6 +20,6 @@ dep:
 	go mod tidy
 
 test:
-	@ go test ./src/...
+	@ go test ./src/domains/...
 
 .PHONY: run build docker_build fmt dep test

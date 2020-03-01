@@ -19,6 +19,7 @@ message Port {
 message ImportResponse {
     int32 number_inserted = 1;
     int32 number_updated = 2;
+    bool encounter_errors = 3;
 }
 
 message GetPortRequest {

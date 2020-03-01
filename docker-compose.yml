@@ -22,13 +22,29 @@ services:
   mongo:
     image: mongo
     environment:
-      MONGO_INITDB_ROOT_USERNAME: user
-      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: supersecret
+      MONGO_INITDB_DATABASE: port_db
     ports:
       - 27017:27017
     volumes:
       - mongo_data:/data/db
+      - ./mongo_init/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+  mongo_test:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: supersecret
+      MONGO_INITDB_DATABASE: port_db
+    ports:
+      - 27018:27017
+    volumes:
+      - mongo_test_data:/data/db
+      - ./mongo_init/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
 volumes:
   mongo_data:
+    driver: local
+  mongo_test_data:
     driver: local
