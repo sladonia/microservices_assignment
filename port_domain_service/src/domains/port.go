@@ -1,10 +1,6 @@
 package domains
 
 import (
-	"context"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"port_domain_service/src/portpb"
 )
 
@@ -23,7 +19,7 @@ type Port struct {
 }
 
 func PortDomainFromPBPort(p *portpb.Port) *Port {
-	return &Port{
+	port := &Port{
 		Abbreviation: p.Abbreviation,
 		Name:         p.Name,
 		City:         p.City,
@@ -34,49 +30,19 @@ func PortDomainFromPBPort(p *portpb.Port) *Port {
 		Province:     p.Province,
 		Timezone:     p.Timezone,
 		Unlocs:       p.Unlocs,
+		Code:         p.Code,
 	}
-}
-
-func UpsertOne(collection *mongo.Collection, port *Port) (int32, int32, error) {
-	op := options.Update().SetUpsert(true)
-	filter := bson.M{"abbreviation": port.Abbreviation}
-	update := bson.M{"$set": port}
-
-	res, err := collection.UpdateOne(context.Background(), filter, update, op)
-	if err != nil {
-		return 0, 0, err
+	if p.Coordinates == nil {
+		p.Coordinates = []float64{}
 	}
-
-	numModified := res.ModifiedCount
-	if res.UpsertedCount == 0 && res.ModifiedCount == 0 {
-		numModified = res.MatchedCount
+	if p.Alias == nil {
+		p.Alias = []string{}
 	}
-
-	return int32(res.UpsertedCount), int32(numModified), nil
-}
-
-func GetOne(collection *mongo.Collection, abbreviation string) (*portpb.Port, error) {
-	filter := bson.M{"abbreviation": abbreviation}
-
-	var port portpb.Port
-	if err := collection.FindOne(context.Background(), filter).Decode(&port); err != nil {
-		return nil, err
+	if p.Regions == nil {
+		p.Regions = []string{}
 	}
-	return &port, nil
-}
-
-func UpsertMany(collection *mongo.Collection, ports []*Port) (int32, int32, error) {
-	var operations []mongo.WriteModel
-	for _, port := range ports {
-		op := mongo.NewUpdateOneModel()
-		op.Filter = bson.M{"abbreviation": port.Abbreviation}
-		op.Update = bson.M{"$set": port}
-		op.SetUpsert(true)
-		operations = append(operations, op)
+	if p.Unlocs == nil {
+		p.Unlocs = []string{}
 	}
-	res, err := collection.BulkWrite(context.Background(), operations)
-	if err != nil {
-		return 0, 0, err
-	}
-	return int32(res.UpsertedCount), int32(res.MatchedCount), nil
+	return port
 }

@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"fmt"
-	//_ "go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"port_domain_service/src/config"

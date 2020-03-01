@@ -1,4 +1,4 @@
-package service
+package controllers
 
 import (
 	"context"
@@ -9,19 +9,19 @@ import (
 	"port_domain_service/src/domains"
 	"port_domain_service/src/logger"
 	"port_domain_service/src/portpb"
+	"port_domain_service/src/services"
 )
 
-var PortService portpb.PortServiceServer = &portService{}
+var PortController portpb.PortServiceServer = &portController{}
 
-type portService struct{}
+type portController struct{}
 
-func (s *portService) Get(ctx context.Context, r *portpb.GetPortRequest) (*portpb.Port, error) {
-	//return storage.Storage.Get(r.Abbreviation)
+func (s *portController) Get(ctx context.Context, r *portpb.GetPortRequest) (*portpb.Port, error) {
 	collection := db.Client.Database("port_db").Collection("ports")
-	return domains.GetOne(collection, r.Abbreviation)
+	return services.StorageService.GetOne(collection, r.Abbreviation)
 }
 
-func (s *portService) Import(stream portpb.PortService_ImportServer) error {
+func (s *portController) Import(stream portpb.PortService_ImportServer) error {
 	portsCh := make(chan *portpb.Port, config.Config.SavePortChunkSize)
 	respCh := make(chan *portpb.ImportResponse)
 
@@ -60,7 +60,7 @@ func GatherAndSave(portsCh <-chan *portpb.Port, respCh chan<- *portpb.ImportResp
 }
 
 func saveAndUpdateResponse(ports []*domains.Port, resp *portpb.ImportResponse, col *mongo.Collection) {
-	nIns, nUpd, err := domains.UpsertMany(col, ports)
+	nIns, nUpd, err := services.StorageService.UpsertMany(col, ports)
 	resp.NumberInserted += nIns
 	resp.NumberUpdated += nUpd
 	if err != nil {

@@ -6,10 +6,10 @@ import (
 	"os"
 	"os/signal"
 	"port_domain_service/src/config"
+	"port_domain_service/src/controllers"
 	"port_domain_service/src/db"
 	"port_domain_service/src/logger"
 	"port_domain_service/src/portpb"
-	"port_domain_service/src/service"
 	"syscall"
 )
 
@@ -44,7 +44,7 @@ func main() {
 
 	// Init grpc service
 	s := grpc.NewServer()
-	portpb.RegisterPortServiceServer(s, service.PortService)
+	portpb.RegisterPortServiceServer(s, controllers.PortController)
 
 	// Start grpc service
 	go func() {
