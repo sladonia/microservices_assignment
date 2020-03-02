@@ -73,3 +73,15 @@ run tests:
 ```sh
 make test
 ```
+
+### disclaimer
+
+The project and it's structure apply a number of simplifications. It's only purpose is to demonstrate programming skills. For the real word scenario:
+* packages client_api, port_domain_service, portpb should be separate repositories
+* portpb package as a common dependency should be installed using `go get`
+
+### further improvements
+
+* implement grpc message streaming in chunks and benchmark the entire system to find the best performance option 
+* implement grpc connection healthcheck and reconnect
+* implement request_id generation middleware
