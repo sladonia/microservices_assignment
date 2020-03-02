@@ -12,6 +12,7 @@ type ApiErrorInterface interface {
 	GetStatusCode() int
 }
 
+// An ApiError represents HTTP REST api error json
 type ApiError struct {
 	Message    string `json:"message"`
 	StatusCode int    `json:"status_code"`

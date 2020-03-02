@@ -16,11 +16,16 @@ var PortController portpb.PortServiceServer = &portController{}
 
 type portController struct{}
 
+// Get calls the storage service package functions to retrieve the Port data form the db
 func (s *portController) Get(ctx context.Context, r *portpb.GetPortRequest) (*portpb.Port, error) {
-	collection := db.Client.Database("port_db").Collection("ports")
+	collection := db.Client.Database(config.Config.DbConfig.DbName).Collection(
+		config.Config.DbConfig.Collection)
 	return services.StorageService.GetOne(collection, r.Abbreviation)
 }
 
+// Import gathers streamed Port data in chunks and calls storage service package functions
+// to perform bulk save to the db
+// use SAVE_PORT_CHUNK_SIZE env var to set the desired chunk size
 func (s *portController) Import(stream portpb.PortService_ImportServer) error {
 	portsCh := make(chan *portpb.Port, config.Config.SavePortChunkSize)
 	respCh := make(chan *portpb.ImportResponse)
@@ -45,7 +50,8 @@ func (s *portController) Import(stream portpb.PortService_ImportServer) error {
 
 func GatherAndSave(portsCh <-chan *portpb.Port, respCh chan<- *portpb.ImportResponse) {
 	resp := &portpb.ImportResponse{}
-	collection := db.Client.Database("port_db").Collection("ports")
+	collection := db.Client.Database(config.Config.DbConfig.DbName).Collection(
+		config.Config.DbConfig.Collection)
 	ports := make([]*domains.Port, 0, config.Config.SavePortChunkSize)
 	for port := range portsCh {
 		p := domains.PortDomainFromPBPort(port)

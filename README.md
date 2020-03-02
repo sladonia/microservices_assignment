@@ -1,5 +1,28 @@
 # microservices_assignment
 
+test assignment
+
+
+### build dependencies
+
+* go v1.13
+* docker, docker-compose
+* GNU make
+
+### build
+
+to build services and docker containers run:
+```sh
+make
+```
+
+### up services
+
+run:
+```sh
+docker-compose up -d client_api
+```
+
 ### api usage
 
 import ports
@@ -9,7 +32,8 @@ curl -X POST -d @ports.json localhost:8080/ports
 # example response:
 {
     "number_inserted":1632,
-    "number_updated":0
+    "number_updated":0,
+    "encounter_errors":false
 }
 ```
 
@@ -21,16 +45,31 @@ curl localhost:8080/port/AEAJM
 {
     "abbreviation": "AEAJM",
     "name": "Ajman",
+    "city": "Ajman",
+    "country": "United Arab Emirates",
+    "alias": [],
+    "regions": [],
     "coordinates": [
         54.37,
         24.47
     ],
-    "city": "Ajman",
     "province": "Ajman",
-    "country": "United Arab Emirates",
     "timezone": "Asia/Dubai",
     "unlocs": [
         "AEAUH"
-    ]
+    ],
+    "code": "52000"
 }
+```
+
+### testing
+
+please note, port_domain_service require mongo_test service running to run tests:
+```sh
+docker-compose up -d mongo_test
+``` 
+
+run tests:
+```sh
+make test
 ```

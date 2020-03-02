@@ -15,7 +15,10 @@ var (
 )
 
 type PortsControllerInterface interface {
+	// Import handles Port import requests
+	// It streams Port data to port_domain grpc service
 	Import(w http.ResponseWriter, r *http.Request)
+	// Calls port_domain grpc service to retrieve the Port data from the db
 	Get(w http.ResponseWriter, r *http.Request)
 }
 
@@ -23,6 +26,8 @@ type portsController struct{}
 
 func (c *portsController) Import(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
+	// Create and fills in the channel with Port data
+	// Request body is being read object by object
 	portsCh, err := json_parser.GetPortsChannel(r.Body)
 	if err != nil {
 		msg := "invalid json body"
@@ -31,7 +36,7 @@ func (c *portsController) Import(w http.ResponseWriter, r *http.Request) {
 		RespondError(w, apiErr)
 		return
 	}
-
+	// Call port_domain grpc service
 	importResp, err := services.PortService.Import(portsCh, grpc_client.Conn)
 	if err != nil {
 		logger.Logger.Infow("unable to call ports grpc service", "error", err)
@@ -47,6 +52,7 @@ func (c *portsController) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	portId := vars["port_id"]
 
+	// Call port_domain grpc service to retrieve the Port data
 	port, err := services.PortService.Get(portId, grpc_client.Conn)
 	if err != nil {
 		logger.Logger.Debugw("unable to get port", "portId", portId, "error", err)

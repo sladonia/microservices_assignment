@@ -7,6 +7,7 @@ var (
 )
 
 type RootControllerInterface interface {
+	// Check alive controller
 	Get(w http.ResponseWriter, r *http.Request)
 }
 

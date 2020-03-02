@@ -13,8 +13,11 @@ import (
 var StorageService StorageServiceInterface = &storageService{}
 
 type StorageServiceInterface interface {
+	// insert single Port record to the db
 	UpsertOne(*mongo.Collection, *domains.Port) (int32, int32, error)
+	// retrieve single Port record form the db
 	GetOne(*mongo.Collection, string) (*portpb.Port, error)
+	// perform bulk Port data upsert
 	UpsertMany(*mongo.Collection, []*domains.Port) (int32, int32, error)
 }
 
