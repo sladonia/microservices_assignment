@@ -1,7 +1,12 @@
 # microservices_assignment
 
-test assignment
+test assignment.
 
+The project is aimed to store and retrieve data about marine ports. It consists of two services:
+* client_api
+* port_domain_service
+
+One can find detailed README for each of the subprojects in the directories client_api/ and port_domain_service/    
 
 ### build dependencies
 
