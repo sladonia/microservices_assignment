@@ -30,7 +30,7 @@ func main() {
 	signal.Notify(signalsCh, os.Interrupt, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
 
 	// Connect to port_domain grpc service
-	err = grpc_client.InitGrpcClient(config.Config.PortDomain.Host,
+	err = grpc_client.InitGrpcConnection(config.Config.PortDomain.Host,
 		config.Config.PortDomain.Port)
 	if err != nil {
 		panic(err)

@@ -6,7 +6,9 @@ import (
 
 var Conn *grpc.ClientConn
 
-func InitGrpcClient(host, port string) (err error) {
+// InitGrpcConnection inits grpc connection
+func InitGrpcConnection(host, port string) (err error) {
+	// TODO: implement connection healthcheck and reconnection
 	Conn, err = grpc.Dial(host+":"+port, grpc.WithInsecure())
 	if err != nil {
 		return nil

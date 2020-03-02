@@ -45,7 +45,7 @@ func (c *portsController) Import(w http.ResponseWriter, r *http.Request) {
 		RespondError(w, apiErr)
 		return
 	}
-	RespondJSON(w, http.StatusOK, importResp)
+	RespondJSON(w, http.StatusCreated, importResp)
 }
 
 func (c *portsController) Get(w http.ResponseWriter, r *http.Request) {
